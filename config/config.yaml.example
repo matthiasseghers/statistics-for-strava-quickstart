@@ -1,0 +1,204 @@
+general:
+  # The URL on which the app will be hosted. This URL will be used in the manifest file.
+  # This will allow you to install the web app as a native app on your device.
+  appUrl: 'http://localhost:8080/'
+  # Optional subtitle to display in the navbar.
+  # Useful for distinguishing between multiple instances of the app.
+  # Leave empty to disable.
+  appSubTitle: null
+  # Optional, a link to your profile picture. Will be used to display in the nav bar and link to your Strava profile.
+  # Any image can be used; a square format is recommended.
+  # Leave empty to disable this feature.
+  profilePictureUrl: null
+  athlete:
+    # Your birthday. Needed to calculate heart rate zones.
+    birthday: 'YYYY-MM-DD'
+    # The formula used to calculate your max heart rate. The default is Fox (220 - age).
+    # Allowed values: arena, astrand, fox, gellish, nes, tanaka
+    # Or you can set a fixed number for any given date range:
+    # maxHeartRateFormula:
+    #   "2020-01-01": 198
+    #   "2025-01-10": 193
+    maxHeartRateFormula: 'fox'
+    # The formula used to calculate your resting heart rate. The default is heuristicAgeBased.
+    # Allowed values: a fixed number, heuristicAgeBased or a date-range map.
+    # restingHeartRateFormula: 50
+    # restingHeartRateFormula:
+    #   "2020-01-01": 53
+    #   "2025-01-10": 55
+    restingHeartRateFormula: 'heuristicAgeBased'
+    # If you're not sure about your zones, leave this unchanged, the defaults are sensible.
+    heartRateZones:
+      # relative: zone numbers are percentages of max HR
+      # absolute: zone numbers are actual bpm values
+      mode: relative
+      default:
+        zone1:
+          from: 50
+          to: 60
+        zone2:
+          from: 61
+          to: 70
+        zone3:
+          from: 71
+          to: 80
+        zone4:
+          from: 81
+          to: 90
+        zone5:
+          from: 91
+          to: null # Infinity and beyond.
+      # PRO tip: You can further refine your heart rate zones by specifying date ranges and sport types.
+      # Read more: https://statistics-for-strava-docs.robiningelbrecht.be/#/configuration/main-configuration?id=athlete-heart-rate-zones
+    # History of weight (in kg or lbs, depending on appearance.unitSystem). Needed to calculate relative w/kg.
+    # Replace the example date with your actual date and weight.
+    # Read more: https://statistics-for-strava-docs.robiningelbrecht.be/#/configuration/main-configuration?id=athlete-weight-history
+    weightHistory:
+      "YYYY-MM-DD": 70
+    # Optional, history of FTP. Needed to calculate activity stress level.
+    # ftpHistory:
+    #   cycling:
+    #     "2023-01-01": 198
+    #     "2023-03-22": 220
+    ftpHistory:
+      cycling: []
+      running: []
+
+appearance:
+  # Allowed options: en_US, fr_FR, it_IT, nl_BE, de_DE, pt_BR, pt_PT, sv_SE, zh_CN
+  locale: 'en_US'
+  # Allowed options: metric or imperial
+  unitSystem: 'metric'
+  # Time format to use when rendering the app. Allowed formats: 24 or 12 (includes AM and PM)
+  timeFormat: 24
+  # Date format to use when rendering the app.
+  # For valid PHP date formats: https://www.php.net/manual/en/datetime.format.php
+  dateFormat:
+    short: 'd-m-y'  # Renders to 01-01-25
+    normal: 'd-m-Y' # Renders to 01-01-2025
+  dashboard:
+    # Leave null to use the default dashboard layout.
+    # For a detailed guide: https://statistics-for-strava-docs.robiningelbrecht.be/#/configuration/dashboard-widgets
+    layout: null
+  heatmap:
+    # Specifies the color of polylines drawn on the heatmap. Accepts any valid CSS color.
+    polylineColor: '#fc6719'
+    # Specifies the type of map to use. Must be a valid tile layer URL.
+    tileLayerUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+    # You can also define multiple tile layers:
+    # tileLayerUrl:
+    #   - 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png'
+    #   - 'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}.png'
+    enableGreyScale: true
+  photos:
+    # Sport types for which photos should be hidden on the photos page.
+    hidePhotosForSportTypes: []
+    defaultEnabledFilters:
+      sportTypes: []
+      # A valid ISO2 country code.
+      countryCode: null
+  # Order in which sport types are rendered (e.g. in the dashboard tabs).
+  # Sport types not listed here will use the app default.
+  sportTypesSortingOrder: []
+
+import:
+  # Strava API has rate limits. To avoid hitting them, cap the number of new activities
+  # processed per import. 250 is a safe default (1000 req/day limit, up to 3 calls per activity).
+  numberOfNewActivitiesToProcessPerImport: 250
+  # Leave empty to import all sport types.
+  # Full list: https://statistics-for-strava-docs.robiningelbrecht.be/#/configuration/main-configuration?id=supported-sport-types
+  # ⚠️ Changing this after activities have been imported will delete activities not in this list.
+  sportTypesToImport: []
+  # Leave empty to import all visibilities. Allowed: everyone, followers_only, only_me
+  # ⚠️ Changing this after activities have been imported will delete activities not in this list.
+  activityVisibilitiesToImport: []
+  # Optional start date (YYYY-MM-DD). Activities before this date won't be imported.
+  # ⚠️ Changing this after activities have been imported will delete activities before this date.
+  skipActivitiesRecordedBefore: null
+  # Activity IDs to skip during import. Example: ["123456789", "987654321"]
+  activitiesToSkipDuringImport: []
+  # Set to true to import segment details (requires extra API calls per segment).
+  optInToSegmentDetailImport: false
+
+metrics:
+  # Activity IDs to exclude from peak power output calculations. Example: ["123456789"]
+  excludeActivitiesFromPeakPowerOutputs: []
+  # Eddington score configuration. Only sport types of the same activity category can be combined.
+  # Full list: https://statistics-for-strava-docs.robiningelbrecht.be/#/configuration/main-configuration?id=supported-sport-types
+  eddington:
+    - label: 'Ride'
+      showInNavBar: true
+      showInDashboardWidget: true
+      sportTypesToInclude: ['Ride', 'MountainBikeRide', 'GravelRide', 'VirtualRide']
+    - label: 'Run'
+      showInNavBar: true
+      showInDashboardWidget: true
+      sportTypesToInclude: ['Run', 'TrailRun', 'VirtualRun']
+    - label: 'Walk'
+      showInNavBar: false
+      showInDashboardWidget: false
+      sportTypesToInclude: ['Walk', 'Hike']
+
+gear:
+  # Optional, used to enrich gear with data that cannot be configured in Strava.
+  # Read more: https://statistics-for-strava-docs.robiningelbrecht.be/#/configuration/gear-maintenance
+  # ⚠️ Do NOT copy the gear ID from the Strava URL — use the one from the gear details popup.
+  stravaGear: []
+  # stravaGear:
+  #   - gearId: 'g12345678'
+  #     purchasePrice:
+  #       amountInCents: 100000
+  #       currency: 'EUR'
+  # Optional, for gear that Strava doesn't allow you to track.
+  # Read more: https://statistics-for-strava-docs.robiningelbrecht.be/#/configuration/custom-gear
+  customGear: []
+  # Optional, used to enrich recording devices with data that cannot be configured in Strava.
+  recordingDevices: []
+  # recordingDevices:
+  #   - gearId: 'garmin-forerunner-265'
+  #     purchasePrice:
+  #       amountInCents: 29950
+  #       currency: EUR
+
+zwift:
+  # Optional, your Zwift level (1-100). Leave empty to disable.
+  level: null
+  # Optional, your Zwift racing score (0-1000). Only used if zwift.level is set.
+  racingScore: null
+
+integrations:
+  notifications:
+    # Optional: one or more notification services.
+    # Full list: https://shoutrrr.nickfedor.com/dev/services/overview/
+    # Leave empty to disable notifications entirely.
+    services: []
+    # Example: - 'ntfy://ntfy.sh/topic'
+  # AI integration configuration.
+  # Full guide: https://statistics-for-strava-docs.robiningelbrecht.be/#/configuration/ai-integration
+  ai:
+    # ⚠️ Use caution when enabling this if the app is publicly accessible!
+    enabled: false
+    # ⚠️ Use caution when enabling this if the app is publicly accessible!
+    enableUI: false
+    # Allowed values: anthropic, azureOpenAI, deepseek, gemini, grok, huggingFace, ollama, openAI, openAILike, openAIResponses, mistral
+    provider: 'PROVIDER-YOU-CHOOSE'
+    configuration:
+      key: 'YOUR-API-KEY'
+      model: 'MODEL-NAME'
+      # Only required when using provider "ollama".
+      url: 'http://host.docker.internal:11434/api'
+
+daemon:
+  # Actions the daemon container runs on a schedule.
+  # ⚠️ Only applies if you have set up the daemon container:
+  #   https://statistics-for-strava-docs.robiningelbrecht.be/#/getting-started/installation?id=docker-composeyml
+  cron:
+    - action: 'importDataAndBuildApp'
+      expression: '0 14 * * *'
+      enabled: true
+    - action: 'gearMaintenanceNotification'
+      expression: '0 14 * * *'
+      enabled: false
+    - action: 'appUpdateAvailableNotification'
+      expression: '0 14 * * *'
+      enabled: false

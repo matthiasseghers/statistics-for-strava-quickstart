@@ -1,0 +1,35 @@
+name: Lint
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  lint-yaml:
+    name: YAML syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: Lint config.yaml.example
+        run: |
+          cat > /tmp/yamllint.yml << 'EOF'
+          extends: relaxed
+          rules:
+            line-length: disable
+          EOF
+          yamllint -c /tmp/yamllint.yml config/config.yaml.example
+
+  lint-docker-compose:
+    name: docker-compose syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate docker-compose.yml
+        run: docker compose config --quiet

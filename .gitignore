@@ -1,0 +1,17 @@
+# ── Credentials & secrets ─────────────────────────────────────
+.env
+
+# ── Personal config (copied from config.yaml.example) ─────────
+config/config.yaml
+
+# ── Runtime data ───────────────────────────────────────────────
+build/
+storage/database/
+storage/files/
+
+# ── OS / editor ────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
