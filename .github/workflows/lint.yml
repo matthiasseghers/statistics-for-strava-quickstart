@@ -31,5 +31,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Create stub .env for validation
+        run: cp .env.example .env
+
       - name: Validate docker-compose.yml
         run: docker compose config --quiet
